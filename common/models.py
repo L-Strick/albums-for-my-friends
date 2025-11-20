@@ -34,21 +34,10 @@ class User(AbstractUser, TimestampedModel):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-# TODO: delete me; this is just a reference example
-def get_s3_path(instance, filename):
-    return "%s/%s/%s" % (
-        "uploads",
-        instance.user_id,
-        filename,
-    )
 
 
-class UploadFile(TimestampedModel):
-    user = models.ForeignKey(User, related_name="files", on_delete=models.PROTECT)
-    file = models.FileField(
-        max_length=1024,
-        upload_to=get_s3_path
-    )
-
-    class Meta:
-        abstract = True
+class Album(TimestampedModel):
+    title = models.CharField(max_length=255)
+    artist = models.CharField(max_length=255)
+    cover_art = models.ImageField(upload_to="covers/")
+    has_been_used = models.BooleanField(default=False)

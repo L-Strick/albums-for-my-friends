@@ -6,4 +6,6 @@ EMAIL_WHITELIST = [
     'joelkrznaric@gmail.com',
     'jacktecca@gmail.com',
     'ursettia1@gmail.com',
+    'ibradaran@gmail.com',
+    'samtalley321@gmail.com',
 ]

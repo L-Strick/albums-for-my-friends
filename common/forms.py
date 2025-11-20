@@ -5,8 +5,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.urls import reverse
 
-from common.constants import People
-
 
 class CrispyFormMixin(object):
     submit_label = "Save"
