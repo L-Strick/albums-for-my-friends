@@ -45,10 +45,7 @@ class TodaysAlbumView(TemplateView):
         if Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).exists():
             return Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).first()
         else:
-            today = datetime.now().date()
-            random.seed(str(today))
-            choices = Album.objects.filter(made_todays_album__isnull=True)
-            album = random.choice(choices)
+            album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
             album.update(made_todays_album=datetime.now())
             return album
 
