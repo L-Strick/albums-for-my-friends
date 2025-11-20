@@ -1,0 +1,11 @@
+{% extends "base_templates/base.html" %}
+
+
+{% block title %}Home{% endblock %}
+
+
+{% block body %}
+  <h1>{{ album.title }}</h1>
+  <h2>{{ album.artist }}</h2>
+  <img src="{{ album.cover.url }}" alt="{{ album.title }} cover">
+{% endblock %}

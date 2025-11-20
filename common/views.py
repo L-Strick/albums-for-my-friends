@@ -34,11 +34,11 @@ class RobotsTxtView(View):
 
 
 class TodaysAlbumView(TemplateView):
-    album = None
+    template_name = 'common/album_view.html'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.album = self.get_todays_album()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"album": self.get_todays_album()})
 
     def get_todays_album(self):
         if Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).exists():
