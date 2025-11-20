@@ -5,18 +5,11 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView, View
 from django.http.response import HttpResponse
 from django.views.generic.edit import FormView
-from common.forms import SampleForm, SecretPasswordForm, WhoAreYouForm
+from common.forms import SampleForm
 
 
-class IndexView(FormView):
+class IndexView(TemplateView):
     template_name = "common/index.html"
-    form_class = SecretPasswordForm
-    success_url = 'welcome'
-
-
-class WelcomeView(FormView):
-    template_name = 'common/welcome.html'
-    form_class = WhoAreYouForm
 
 
 class LogoutView(View):

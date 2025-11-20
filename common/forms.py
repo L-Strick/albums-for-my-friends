@@ -37,14 +37,3 @@ class SampleForm(CrispyFormMixin, forms.Form):
         if not password1 and not password2 or password1 != password2:
             raise forms.ValidationError("Passwords dont match")
         return self.cleaned_data
-
-
-class SecretPasswordForm(CrispyFormMixin, forms.Form):
-    password = forms.CharField(label='', widget=forms.PasswordInput())
-
-    def is_valid(self):
-        return self.data["password"] == 'i-love-mindgoblin'
-
-
-class WhoAreYouForm(CrispyFormMixin, forms.Form):
-    user = forms.ChoiceField(widget=forms.Select(), choices=People.choices)

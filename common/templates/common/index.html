@@ -1,16 +1,15 @@
 {% extends "base_templates/base.html" %}
-{% load crispy_forms_tags %}
 
 
 {% block title %}Home{% endblock %}
 
-{% block head %}
-
-{% endblock %}
 
 {% block body %}
-  <div class="container">
-    <p>What's the password, bitch?</p>
-    {% crispy form %}
-  </div>
+  {% if not request.user.is_authenticated %}
+    <div class="container">
+      <p>Welcome to albums-for-my-friends. Please log in to continue.</p>
+    </div>
+  {% else %}
+    You did it!
+  {% endif %}
 {% endblock %}
