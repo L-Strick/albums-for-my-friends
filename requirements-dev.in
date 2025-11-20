@@ -1,0 +1,12 @@
+-r requirements.in
+-c requirements.txt
+
+werkzeug
+pip-tools
+coverage
+
+####### OPTIONAL FEATURES #######
+pre-commit
+flake8
+isort
+django-debug-toolbar
