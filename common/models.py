@@ -40,4 +40,4 @@ class Album(TimestampedModel):
     title = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
     cover_art = models.ImageField(upload_to="covers/")
-    has_been_used = models.BooleanField(default=False)
+    made_todays_album = models.DateTimeField(null=True)

@@ -1,3 +1,6 @@
+import random
+from datetime import datetime, timedelta
+
 from django.contrib.auth import logout
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -6,6 +9,7 @@ from django.views.generic.base import TemplateView, View
 from django.http.response import HttpResponse
 from django.views.generic.edit import FormView
 from common.forms import SampleForm
+from common.models import Album
 
 
 class IndexView(TemplateView):
@@ -27,6 +31,23 @@ class RobotsTxtView(View):
             # Block all
             lines = ["User-agent: *", "Disallow: /"]
         return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+class TodaysAlbumView(TemplateView):
+    album = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.album = self.get_todays_album()
+
+    def get_todays_album(self):
+        if Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).exists():
+            return Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).first()
+        else:
+            today = datetime.now().date()
+            random.seed(today)
+            choices = Album.objects.filter(made_todays_album__isnull=True)
+            return random.choice(choices)
 
 
 class SampleFormView(FormView):
