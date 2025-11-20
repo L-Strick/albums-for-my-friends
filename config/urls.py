@@ -14,10 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path
 
+from config import settings
 from config.constants import HEALTH_CHECK_URL_NAME
 
 urlpatterns = [
@@ -27,6 +29,7 @@ urlpatterns = [
     # Health check is actually handled by the HealthCheckMiddleware
     path("health-check/", lambda request: HttpResponse("ok"), name=HEALTH_CHECK_URL_NAME),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = "common.views.error_404"
 handler500 = "common.views.error_500"

@@ -10,6 +10,6 @@
       <p>Welcome to albums-for-my-friends. Please log in to continue.</p>
     </div>
   {% else %}
-    You did it!
+    <a href="{% url 'todays_album' %}">See Today's Album</a>
   {% endif %}
 {% endblock %}

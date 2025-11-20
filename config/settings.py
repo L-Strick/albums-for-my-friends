@@ -234,7 +234,8 @@ MESSAGE_TAGS = {
 
 if LOCALHOST is True:
     DEFAULT_STORAGE = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
-    MEDIA_ROOT = ""
+    MEDIA_ROOT = "media"
+    MEDIA_URL = "/media/"
 else:
     DEFAULT_STORAGE = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",

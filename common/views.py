@@ -39,13 +39,14 @@ class TodaysAlbumView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({"album": self.get_todays_album()})
+        return context
 
     def get_todays_album(self):
         if Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).exists():
             return Album.objects.filter(made_todays_album__gte=datetime.now() - timedelta(hours=24)).first()
         else:
             today = datetime.now().date()
-            random.seed(today)
+            random.seed(str(today))
             choices = Album.objects.filter(made_todays_album__isnull=True)
             album = random.choice(choices)
             album.update(made_todays_album=datetime.now())
