@@ -47,7 +47,9 @@ class TodaysAlbumView(TemplateView):
             today = datetime.now().date()
             random.seed(today)
             choices = Album.objects.filter(made_todays_album__isnull=True)
-            return random.choice(choices)
+            album = random.choice(choices)
+            album.update(made_todays_album=datetime.now())
+            return album
 
 
 class SampleFormView(FormView):

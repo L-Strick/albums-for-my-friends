@@ -40,4 +40,12 @@ class Album(TimestampedModel):
     title = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
     cover_art = models.ImageField(upload_to="covers/")
-    made_todays_album = models.DateTimeField(null=True)
+    made_todays_album = models.DateTimeField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.made_todays_album:
+            self.made_todays_album = None
+        super(Album, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.title} // {self.artist}"
