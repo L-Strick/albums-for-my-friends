@@ -1,5 +1,5 @@
 {% extends "base_templates/base.html" %}
-
+{% load filters %}
 
 {% block title %}Home{% endblock %}
 
@@ -16,13 +16,13 @@
       </thead>
       <tbody>
         {% for obj in object_list %}
-          {% with obj_id=obj.id %}
-            <tr>
-              <td>{{ obj }}</td>
-              <td>{{ user_review_lookup.obj_id }}</td>
-              <td>{{ obj.get_average_score }}</td>
-            </tr>
-          {% endwith %}
+          <tr>
+            <td>{{ obj }}</td>
+            <td>
+              {{ user_review_lookup|get_item:obj.id|get_item:"rating" }} {% if user_review_lookup|get_item:obj.id|get_item:"rating" != '--' %}<a class="btn btn-primary float-end" href="{% url 'album_review' user_review_lookup|get_item:obj.id|get_item:'id' %}">Edit</a>{% endif %}
+            </td>
+            <td>{{ obj.get_average_score }} <a class="btn btn-primary float-end" href="{% url 'album_review_list' obj.id %}">See All</a></td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
