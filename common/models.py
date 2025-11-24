@@ -1,6 +1,8 @@
 import uuid
+from decimal import Decimal
 
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from common.managers import UserManager
@@ -39,6 +41,7 @@ class User(AbstractUser, TimestampedModel):
 class Album(TimestampedModel):
     title = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
+    submitted_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     cover_art = models.ImageField(upload_to="covers/")
     made_todays_album = models.DateTimeField(blank=True, null=True)
 
@@ -49,3 +52,17 @@ class Album(TimestampedModel):
 
     def __str__(self):
         return f"{self.title} // {self.artist}"
+
+    def get_average_score(self):
+        reviews = self.reviews.filter(rating__isnull=False)
+        if reviews.count() > 0:
+            return sum(reviews.values_list('rating', flat=True)) / reviews.count()
+        else:
+            return '--'
+
+
+class AlbumReview(TimestampedModel):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    album = models.ForeignKey(Album, on_delete=models.PROTECT, related_name="reviews")
+    notes = models.TextField(blank=True, null=True)
+    rating = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('10.0'))])

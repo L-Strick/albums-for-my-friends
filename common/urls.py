@@ -8,6 +8,7 @@ urlpatterns = [
     path("logout", views.LogoutView.as_view(), name="logout"),
     path("robots.txt", views.RobotsTxtView.as_view(), name="robots_txt"),
     path("todays_album/", views.TodaysAlbumView.as_view(), name="todays_album"),
+    path("past_albums/", views.AlbumListView.as_view(), name="past_albums"),
 ]
 if settings.DEBUG_TOOLBAR:
     urlpatterns += [

@@ -5,6 +5,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.urls import reverse
 
+from common.models import AlbumReview
+
 
 class CrispyFormMixin(object):
     submit_label = "Save"
@@ -35,3 +37,14 @@ class SampleForm(CrispyFormMixin, forms.Form):
         if not password1 and not password2 or password1 != password2:
             raise forms.ValidationError("Passwords dont match")
         return self.cleaned_data
+
+
+class AlbumReviewForm(CrispyFormMixin, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['notes'].label = 'Listening Notes'
+        self.fields['notes'].required = True
+
+    class Meta:
+        model = AlbumReview
+        exclude = ['id', 'created_on', 'updated_on', 'album', 'user']

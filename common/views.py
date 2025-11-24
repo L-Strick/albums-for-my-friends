@@ -1,15 +1,18 @@
 import random
 from datetime import datetime, timedelta
 
+from django.contrib import messages
 from django.contrib.auth import logout
 from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views.generic import ListView
 from django.views.generic.base import TemplateView, View
 from django.http.response import HttpResponse
 from django.views.generic.edit import FormView
-from common.forms import SampleForm
-from common.models import Album
+from common.forms import SampleForm, AlbumReviewForm
+from common.models import Album, AlbumReview
 
 
 class IndexView(TemplateView):
@@ -33,12 +36,33 @@ class RobotsTxtView(View):
         return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
-class TodaysAlbumView(TemplateView):
+class TodaysAlbumView(FormView):
     template_name = 'common/album_view.html'
+    form_class = AlbumReviewForm
+    album = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.album = self.get_todays_album()
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        try:
+            album_review = AlbumReview.objects.get(album=self.album, user=self.request.user)
+            return form_class(instance=album_review, **self.get_form_kwargs())
+        except AlbumReview.DoesNotExist:
+            return form_class(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        form.instance.album = self.album
+        form.instance.user = self.request.user
+        form.save()
+        return super(TodaysAlbumView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({"album": self.get_todays_album()})
+        context.update({"album": self.album})
         return context
 
     def get_todays_album(self):
@@ -48,6 +72,29 @@ class TodaysAlbumView(TemplateView):
             album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
             album.update(made_todays_album=datetime.now())
             return album
+
+    def get_success_url(self):
+        return reverse("todays_album")
+
+
+class AlbumListView(ListView):
+    model = Album
+    template_name = 'common/album_list_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        albums = self.get_queryset()
+        user_reviews = AlbumReview.objects.filter(album__in=albums, user=self.request.user)
+        context["user_review_lookup"] = {
+            str(review.album_id): review.rating
+            for review in user_reviews
+        }
+        return context
+
+    def get_queryset(self):
+        return self.model.objects.filter(
+            Q(~Q(id=TodaysAlbumView().album.id) & Q(made_todays_album__isnull=False))
+        ).prefetch_related('reviews')
 
 
 class SampleFormView(FormView):

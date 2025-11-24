@@ -6,10 +6,13 @@
 
 {% block body %}
   {% if not request.user.is_authenticated %}
-    <div class="container">
-      <p>Welcome to albums-for-my-friends. Please log in to continue.</p>
+    <div class="container text-center">
+      <h2>Welcome welcome! you must be one of my friends!! Please login so that I can know for sure!</h2>
     </div>
   {% else %}
-    <a href="{% url 'todays_album' %}">See Today's Album</a>
+    <div class="flex-container">
+      <a href="{% url 'todays_album' %}" class="btn btn-primary">Today's Album</a>
+      <a href="{% url 'past_albums' %}" class="btn btn-primary">Past Albums</a>
+    </div>
   {% endif %}
 {% endblock %}

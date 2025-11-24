@@ -1,0 +1,30 @@
+{% extends "base_templates/base.html" %}
+
+
+{% block title %}Home{% endblock %}
+
+
+{% block body %}
+  <div class="container">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Album</th>
+          <th>Your Review</th>
+          <th>Group Reviews</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for obj in object_list %}
+          {% with obj_id=obj.id %}
+            <tr>
+              <td>{{ obj }}</td>
+              <td>{{ user_review_lookup.obj_id }}</td>
+              <td>{{ obj.get_average_score }}</td>
+            </tr>
+          {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
