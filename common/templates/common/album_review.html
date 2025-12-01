@@ -8,10 +8,10 @@
   <div class="container">
     <div class="row text-center">
       <div class="col-md-6">
-        <h1>{{ object.album.title }}</h1>
-        <h2>{{ object.album.artist }}</h2>
-        <img src="{{ object.album.cover_art.url }}" alt="{{ object.album.title }} cover" style="max-height: 500px; max-width: 500px;">
-        <p class="lead">Submitted by: {{ object.album.submitted_by }}</p>
+        <h1>{{ album.title }}</h1>
+        <h2>{{ album.artist }}</h2>
+        <img src="{{ album.cover_art.url }}" alt="{{ album.title }} cover" style="max-height: 500px; max-width: 500px;">
+        <p class="lead">Submitted by: {{ album.submitted_by }}</p>
       </div>
       <div class="col-md-6 d-flex align-items-center">
         {% crispy form %}

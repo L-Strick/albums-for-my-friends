@@ -107,14 +107,49 @@ class AlbumReviewView(UpdateView):
     form_class = AlbumReviewForm
     template_name = 'common/album_review.html'
 
+    def get_object(self, queryset=None):
+        try:
+            return super(AlbumReviewView, self).get_object(queryset)
+        except AttributeError:
+            return None
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(AlbumReviewView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(AlbumReviewView, self).post(request, *args, **kwargs)
+
     def get_form(self, form_class=None):
         if form_class is None:
             form_class = self.get_form_class()
         try:
-            album_review = AlbumReview.objects.get(album_id=self.kwargs.get('pk'), user=self.request.user)
-            return form_class(instance=album_review, **self.get_form_kwargs())
+            if self.kwargs.get('pk'):
+                album_review = AlbumReview.objects.get(album_id=self.kwargs.get('pk'), user=self.request.user)
+                return form_class(instance=album_review, **self.get_form_kwargs())
+            else:
+                return form_class(**self.get_form_kwargs())
         except AlbumReview.DoesNotExist:
             return form_class(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        if not self.object:
+            form.instance.album = Album.objects.get(id=self.kwargs['album_id'])
+            form.instance.user = self.request.user
+        form.save()
+        return super(AlbumReviewView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'album_id' in self.kwargs:
+            album = Album.objects.get(id=self.kwargs['album_id'])
+        elif self.object:
+            album = self.object.album
+        else:
+            album = None
+        context['album'] = album
+        return context
 
     def get_success_url(self):
         return reverse("past_albums")
