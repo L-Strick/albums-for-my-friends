@@ -44,6 +44,7 @@ class Album(TimestampedModel):
     submitted_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     cover_art = models.ImageField(upload_to="covers/")
     made_todays_album = models.DateTimeField(blank=True, null=True)
+    genre = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.made_todays_album:

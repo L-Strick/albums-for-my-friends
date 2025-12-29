@@ -17,7 +17,7 @@
       <tbody>
         {% for obj in object_list %}
           <tr>
-            <td>{% if obj.title == '1999' %}{{ obj }}{% else %}SECRET{% endif %}</td>
+            <td>{{ obj }}</td>
             <td>
               {{ user_review_lookup|get_item:obj.id|get_item:"rating" }}<a class="btn btn-primary float-end" href="{% if user_review_lookup|get_item:obj.id|get_item:"rating" != '--' %}{% url 'album_review' user_review_lookup|get_item:obj.id|get_item:'id' %}{% else %}{% url 'create_album_review' obj.id %}{% endif %}">Edit</a>
             </td>
