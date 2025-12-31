@@ -41,9 +41,9 @@ class User(AbstractUser, TimestampedModel):
 class Album(TimestampedModel):
     title = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
-    submitted_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
-    cover_art = models.ImageField(upload_to="covers/")
-    made_todays_album = models.DateTimeField(blank=True, null=True)
+    submitted_by = models.CharField(max_length=255, null=True, blank=True)
+    cover_art = models.ImageField(upload_to="covers/", null=True)
+    made_todays_album = models.DateTimeField(null=True)
     genre = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):

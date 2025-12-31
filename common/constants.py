@@ -15,4 +15,5 @@ EMAIL_WHITELIST = [
     'georuddy@gmail.com',
     'rikomartinez39@gmail.com',
     'uhallc@gmail.com',
+    'bry.biggs15@gmail.com',
 ]
