@@ -43,7 +43,7 @@ class Album(TimestampedModel):
     artist = models.CharField(max_length=255)
     submitted_by = models.CharField(max_length=255, null=True, blank=True)
     cover_art = models.ImageField(upload_to="covers/", null=True)
-    made_todays_album = models.DateTimeField(null=True)
+    made_todays_album = models.DateTimeField(null=True, blank=True)
     genre = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
