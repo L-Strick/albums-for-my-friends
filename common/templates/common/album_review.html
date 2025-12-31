@@ -11,7 +11,9 @@
         <h1>{{ album.title }}</h1>
         <h2>{{ album.artist }}</h2>
         <h3>{% if album.genre %}{{ album.genre }}{% else %}{% endif %}</h3>
-        <img src="{{ album.cover_art.url }}" alt="{{ album.title }} cover" style="max-height: 500px; max-width: 500px;">
+        {% if album.cover_art %}
+          <img src="{{ album.cover_art.url }}" alt="{{ album.title }} cover" style="max-height: 500px; max-width: 500px;">
+        {% endif %}
         <p class="lead">Submitted by: {{ album.submitted_by }}</p>
       </div>
       <div class="col-md-6 d-flex align-items-center">

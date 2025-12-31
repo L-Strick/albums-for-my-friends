@@ -75,9 +75,9 @@ class TodaysAlbumView(FormView):
                 album.update(made_todays_album=datetime.now(ZoneInfo('America/New_York')))
                 return album
             else:
-                Album.objects.order_by('-made_todays_album').first()
+                return Album.objects.filter(made_todays_album__isnull=False).order_by('-made_todays_album').first()
         else:
-            return Album.objects.order_by('-made_todays_album').first()
+            return Album.objects.filter(made_todays_album__isnull=False).order_by('-made_todays_album').first()
 
     def get_success_url(self):
         return reverse("todays_album")
