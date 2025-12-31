@@ -67,12 +67,17 @@ class TodaysAlbumView(FormView):
         return context
 
     def get_todays_album(self):
-        if Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).exists():
-            return Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).first()
+        today = datetime.today()
+        doy = today.weekday()
+        if doy in [0, 3]:
+            if not Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).exists():
+                album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
+                album.update(made_todays_album=datetime.now(ZoneInfo('America/New_York')))
+                return album
+            else:
+                Album.objects.order_by('-made_todays_album').first()
         else:
-            album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
-            album.update(made_todays_album=datetime.now(ZoneInfo('America/New_York')))
-            return album
+            return Album.objects.order_by('-made_todays_album').first()
 
     def get_success_url(self):
         return reverse("todays_album")
