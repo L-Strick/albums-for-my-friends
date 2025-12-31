@@ -102,8 +102,11 @@ class AlbumListView(ListView):
         return context
 
     def get_queryset(self):
+        todays_album_id = None
+        if TodaysAlbumView().album:
+            todays_album_id = TodaysAlbumView().album.id
         return self.model.objects.filter(
-            Q(~Q(id=TodaysAlbumView().album.id) & Q(made_todays_album__isnull=False))
+            Q(~Q(id=todays_album_id) & Q(made_todays_album__isnull=False))
         ).prefetch_related('reviews')
 
 
