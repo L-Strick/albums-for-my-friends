@@ -67,8 +67,10 @@ class TodaysAlbumView(FormView):
         return context
 
     def get_todays_album(self):
-        today = datetime.today()
+        today = datetime.now(ZoneInfo('America/New_York'))
+        print(today)
         doy = today.weekday()
+        print(doy)
         if doy in [0, 3]:
             if not Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).exists():
                 album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
