@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from common.constants import EMAIL_TO_NAME_LOOKUP
 from common.managers import UserManager
 
 
@@ -36,6 +37,9 @@ class User(AbstractUser, TimestampedModel):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    def __str__(self):
+        return EMAIL_TO_NAME_LOOKUP[self.email]
 
 
 class Album(TimestampedModel):

@@ -17,3 +17,21 @@ EMAIL_WHITELIST = [
     'uhallc@gmail.com',
     'bry.biggs15@gmail.com',
 ]
+
+EMAIL_TO_NAME_LOOKUP = {
+    'lukusstricker@gmail.com': 'Lukus',
+    'michael.english3636@gmail.com': 'Mike',
+    'joelkrznaric@gmail.com': 'Joel',
+    'jacktecca@gmail.com': 'Tecca',
+    'ursettia1@gmail.com': 'Ursetti',
+    'ibradaran@gmail.com': 'Iden',
+    'samtalley321@gmail.com': 'Sam',
+    'christopher.campbell1119@gmail.com': 'Chris',
+    'gbirindelli20@gmail.com': 'Grant',
+    'ngill0320@gmail.com': 'Nate',
+    'dudekm1411@gmail.com': 'Chuck',
+    'georuddy@gmail.com': 'Buster',
+    'rikomartinez39@gmail.com': 'Dick',
+    'uhallc@gmail.com': 'Uhall',
+    'bry.biggs15@gmail.com': 'Brian',
+}
