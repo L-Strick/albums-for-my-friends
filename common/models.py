@@ -57,7 +57,7 @@ class Album(TimestampedModel):
     def get_average_score(self):
         reviews = self.reviews.filter(rating__isnull=False)
         if reviews.count() > 0:
-            return sum(reviews.values_list('rating', flat=True)) / reviews.count()
+            return str(round(sum(reviews.values_list('rating', flat=True)) / reviews.count(), 2))
         else:
             return '--'
 

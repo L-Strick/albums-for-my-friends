@@ -92,7 +92,7 @@ class AlbumListView(ListView):
         albums = self.get_queryset()
         user_reviews = AlbumReview.objects.filter(album__in=albums, user=self.request.user)
         user_review_lookup = {
-            review.album_id: {"rating": f"{review.rating:.2f}", "id": review.id}
+            review.album_id: {"rating": review.rating, "id": review.id}
             for review in user_reviews
         }
         for album in albums:
