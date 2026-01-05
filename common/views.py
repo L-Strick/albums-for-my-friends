@@ -183,7 +183,10 @@ class StatisticsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         users = User.objects.all()
-        reviews = AlbumReview.objects.all()
+        todays_album_id = None
+        if TodaysAlbumView().album:
+            todays_album_id = TodaysAlbumView().album.id
+        reviews = AlbumReview.objects.filter(~Q(album__id=todays_album_id))
         user_reviews = defaultdict(list)
         user_data_dict = {}
         for review in reviews:
