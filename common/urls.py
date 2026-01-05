@@ -12,6 +12,7 @@ urlpatterns = [
     path("review/album/<uuid:album_id>/", views.AlbumReviewView.as_view(), name="create_album_review"),
     path("review/<uuid:pk>/", views.AlbumReviewView.as_view(), name="album_review"),
     path("album_reviews/<uuid:pk>", views.AlbumReviewListView.as_view(), name="album_review_list"),
+    path("statistics", views.StatisticsView.as_view(), name="statistics"),
 ]
 if settings.DEBUG_TOOLBAR:
     urlpatterns += [

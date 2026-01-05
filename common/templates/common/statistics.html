@@ -1,0 +1,29 @@
+{% extends "base_templates/base.html" %}
+
+{% block title %}Statistics{% endblock %}
+
+
+{% block body %}
+  <div class="container">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Max Rating</th>
+          <th>Min Rating</th>
+          <th>Average Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user, values in user_data_dict.items %}
+          <tr>
+            <td>{{ user }}</td>
+            <td>{{ values.max }}</td>
+            <td>{{ values.min }}</td>
+            <td>{{ values.avg }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

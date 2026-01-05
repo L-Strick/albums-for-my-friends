@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -13,7 +14,7 @@ from django.views.generic.base import TemplateView, View
 from django.http.response import HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from common.forms import SampleForm, AlbumReviewForm
-from common.models import Album, AlbumReview
+from common.models import Album, AlbumReview, User
 
 
 class IndexView(TemplateView):
@@ -174,6 +175,26 @@ class AlbumReviewListView(ListView):
 
     def get_queryset(self):
         return AlbumReview.objects.filter(album_id=self.kwargs.get('pk'))
+
+
+class StatisticsView(TemplateView):
+    template_name = 'common/statistics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        users = User.objects.all()
+        reviews = AlbumReview.objects.all()
+        user_reviews = defaultdict(list)
+        user_data_dict = {}
+        for review in reviews:
+            user_reviews[review.user].append(review.rating)
+        for user in users:
+            if user_reviews[user]:
+                user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(sum(user_reviews[user]) / len(user_reviews[user]), 2))}
+            else:
+                user_data_dict[user] = {"max": "--", "min": "--", "avg": "--"}
+        context["user_data_dict"] = user_data_dict
+        return context
 
 
 class SampleFormView(FormView):

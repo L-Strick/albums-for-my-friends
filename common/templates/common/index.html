@@ -1,6 +1,5 @@
 {% extends "base_templates/base.html" %}
 
-
 {% block title %}Home{% endblock %}
 
 
@@ -13,6 +12,7 @@
     <div class="flex-container">
       <a href="{% url 'todays_album' %}" class="btn btn-primary">Today's Album</a>
       <a href="{% url 'past_albums' %}" class="btn btn-primary">Past Albums</a>
+      <a href="{% url 'statistics' %}" class="btn btn-primary">Statistics</a>
     </div>
   {% endif %}
 {% endblock %}

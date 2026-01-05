@@ -39,7 +39,10 @@ class User(AbstractUser, TimestampedModel):
     objects = UserManager()
 
     def __str__(self):
-        return EMAIL_TO_NAME_LOOKUP[self.email]
+        if self.email in EMAIL_TO_NAME_LOOKUP.keys():
+            return EMAIL_TO_NAME_LOOKUP[self.email]
+        else:
+            return self.email
 
 
 class Album(TimestampedModel):
