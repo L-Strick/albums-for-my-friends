@@ -28,7 +28,7 @@
               <tr>
                 <td>{{ obj.user }}</td>
                 <td>{{ obj.rating }}</td>
-                <td>{{ obj.notes }}</td>
+                <td>{{ obj.notes|linebreaks }}</td>
               </tr>
             {% endfor %}
           </tbody>
