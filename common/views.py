@@ -211,7 +211,7 @@ class StatisticsView(TemplateView):
             context["average_review"] = "--"
         highest_rated_album = None, None
         lowest_rated_album = None, None
-        most_controversial_album = None, None
+        most_controversial_album = None, None, None, None
         for album in reviewed_albums:
             if highest_rated_album[1] is None or float(album.get_average_score()) > highest_rated_album[1]:
                 highest_rated_album = album, float(album.get_average_score())
@@ -219,12 +219,14 @@ class StatisticsView(TemplateView):
                 lowest_rated_album = album, float(album.get_average_score())
             ratings = album.reviews.filter(rating__isnull=False).values_list('rating', flat=True)
             if most_controversial_album[1] is None or max(ratings) - min(ratings) > most_controversial_album[1]:
-                most_controversial_album = album, max(ratings) - min(ratings)
+                most_controversial_album = album, max(ratings) - min(ratings), max(ratings), min(ratings)
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
             "most_controversial_album": most_controversial_album[0],
             "most_controversial_diff": most_controversial_album[1],
+            "most_controversial_high": most_controversial_album[2],
+            "most_controversial_low": most_controversial_album[3],
         })
         return context
 
