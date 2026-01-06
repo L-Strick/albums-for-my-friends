@@ -35,3 +35,5 @@ EMAIL_TO_NAME_LOOKUP = {
     'uhallc@gmail.com': 'Uhall',
     'bry.biggs15@gmail.com': 'Brian',
 }
+
+NAME_TO_EMAIL_LOOKUP = {value: key for key, value in EMAIL_TO_NAME_LOOKUP.items()}
