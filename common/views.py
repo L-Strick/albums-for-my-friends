@@ -191,11 +191,19 @@ class StatisticsView(TemplateView):
         user_data_dict = {}
         for review in reviews:
             user_reviews[review.user].append(review.rating)
+        reviewed_albums = Album.objects.filter(~Q(id=todays_album_id) & Q(made_todays_album__isnull=False))
+        user_submitted_albums = defaultdict(list)
+        for album in reviewed_albums:
+            user_submitted_albums[album.submitted_by].append(album)
         for user in users:
             if user_reviews[user]:
                 user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(sum(user_reviews[user]) / len(user_reviews[user]), 2))}
             else:
                 user_data_dict[user] = {"max": "--", "min": "--", "avg": "--"}
+            if user_submitted_albums[user]:
+                user_data_dict[user]["submitted_avg"] = str(round(sum([album.get_average_score for album in user_submitted_albums[user]]) / len(user_submitted_albums[user]), 2))
+            else:
+                user_data_dict[user]["submitted_avg"] = "--"
         context["user_data_dict"] = user_data_dict
         return context
 
