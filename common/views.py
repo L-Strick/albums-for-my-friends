@@ -14,7 +14,7 @@ from django.views.generic.base import TemplateView, View
 from django.http.response import HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from common.forms import SampleForm, AlbumReviewForm
-from common.models import Album, AlbumReview, User
+from common.models import Album, AlbumReview, User, UserReviewThumb
 
 
 class IndexView(TemplateView):
@@ -170,7 +170,18 @@ class AlbumReviewListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({"album": Album.objects.get(id=self.kwargs.get('pk'))})
+        album = Album.objects.get(id=self.kwargs.get('pk'))
+        reviews = album.reviews.all()
+        user_likes = []
+        user_dislikes = []
+        like_counter_lookup = {review.id: UserReviewThumb.objects.filter(review=review, thumbs_up=True).count() for review in reviews}
+        dislike_counter_lookup = {review.id: UserReviewThumb.objects.filter(review=review, thumbs_down=True).count() for review in reviews}
+        for review in reviews:
+            if UserReviewThumb.objects.filter(review=review, user=self.request.user, thumbs_up=True).exists():
+                user_likes.append(review.id)
+            if UserReviewThumb.objects.filter(review=review, user=self.request.user, thumbs_down=True).exists():
+                user_dislikes.append(review.id)
+        context.update({"album": album, "user_likes": user_likes, "user_dislikes": user_dislikes, "like_counter_lookup": like_counter_lookup, "dislike_counter_lookup": dislike_counter_lookup})
         return context
 
     def get_queryset(self):
@@ -204,6 +215,8 @@ class StatisticsView(TemplateView):
                 user_data_dict[user]["submitted_avg"] = str(round(sum([float(album.get_average_score()) for album in user_submitted_albums[user]]) / len(user_submitted_albums[user]), 2))
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
+            user_data_dict[user]["likes"] = UserReviewThumb.objects.filter(review__user=user, thumbs_up=True).count()
+            user_data_dict[user]["dislikes"] = UserReviewThumb.objects.filter(review__user=user, thumbs_down=True).count()
         context["user_data_dict"] = user_data_dict
         if reviews.count() > 0:
             context["average_review"] = str(round(sum(reviews.values_list('rating', flat=True)) / reviews.count(), 2))
@@ -229,6 +242,27 @@ class StatisticsView(TemplateView):
             "most_controversial_low": most_controversial_album[3],
         })
         return context
+
+
+class ReviewVoteView(View):
+    def post(self, *args, **kwargs):
+        user = User.objects.get(id=kwargs.get('user_id'))
+        review = AlbumReview.objects.get(id=kwargs.get('review_id'))
+        vote = kwargs.get('vote')
+        user_thumb = UserReviewThumb.objects.filter(review=review, user=user).first()
+        if not user_thumb:
+            user_thumb = UserReviewThumb.objects.create(review=review, user=user)
+        if vote == 'like':
+            if user_thumb.thumbs_up:
+                user_thumb.update(thumbs_up=False, thumbs_down=False)
+            else:
+                user_thumb.update(thumbs_up=True, thumbs_down=False)
+        elif vote == 'dislike':
+            if user_thumb.thumbs_down:
+                user_thumb.update(thumbs_up=False, thumbs_down=False)
+            else:
+                user_thumb.update(thumbs_up=False, thumbs_down=True)
+        return redirect('album_review_list', pk=review.album.id)
 
 
 class SampleFormView(FormView):

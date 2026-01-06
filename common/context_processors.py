@@ -7,4 +7,5 @@ def django_settings(request):
         "PRODUCTION": settings.PRODUCTION,
         "LOCALHOST": settings.LOCALHOST,
         "EMAIL_WHITELIST": EMAIL_WHITELIST,
+        "user_id": request.user.id,
     }

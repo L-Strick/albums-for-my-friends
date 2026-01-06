@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models import CheckConstraint, Q
 
 from common.constants import EMAIL_TO_NAME_LOOKUP
 from common.managers import UserManager
@@ -74,3 +75,13 @@ class AlbumReview(TimestampedModel):
     album = models.ForeignKey(Album, on_delete=models.PROTECT, related_name="reviews")
     notes = models.TextField(blank=True, null=True)
     rating = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('10.0'))])
+
+
+class UserReviewThumb(TimestampedModel):
+    review = models.ForeignKey(AlbumReview, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    thumbs_up = models.BooleanField(default=False)
+    thumbs_down = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [CheckConstraint(check=Q(thumbs_up=False) | Q(thumbs_down=False), name="thumbs_cannot_both_be_true")]

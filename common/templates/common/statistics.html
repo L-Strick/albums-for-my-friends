@@ -14,6 +14,8 @@
           <th>Min Rating</th>
           <th>Average Rating</th>
           <th>Average Submitted Score</th>
+          <th>Review Likes</th>
+          <th>Review Dislikes</th>
         </tr>
       </thead>
       <tbody>
@@ -24,6 +26,8 @@
             <td>{{ values.min }}</td>
             <td>{{ values.avg }}</td>
             <td>{{ values.submitted_avg }}</td>
+            <td>{{ values.likes }}</td>
+            <td>{{ values.dislikes }}</td>
           </tr>
         {% endfor %}
       </tbody>
