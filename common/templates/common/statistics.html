@@ -31,6 +31,7 @@
 
     <h1>Group Stats</h1>
     <h3>Average Album Rating: {{ average_review }}</h3>
+    <hr>
     <h3>Highest Rated Album: {{ highest_rated_album }}</h3>
     <div class="col-md-6">
       {% if highest_rated_album.cover_art %}
@@ -39,6 +40,7 @@
       <p>Submitted by: {{ highest_rated_album.submitted_by }}</p>
       <h4>Average Score: {{ highest_rated_album.get_average_score }}</h4>
     </div>
+    <hr>
     <h3>Lowest Rated Album: {{ lowest_rated_album }}</h3>
     <div class="col-md-6">
       {% if lowest_rated_album.cover_art %}
@@ -47,6 +49,7 @@
       <p>Submitted by: {{ lowest_rated_album.submitted_by }}</p>
       <h4>Average Score: {{ lowest_rated_album.get_average_score }}</h4>
     </div>
+    <hr>
     <h3>Most Controversial Album: {{ most_controversial_album }}</h3>
     <div class="col-md-6">
       {% if most_controversial_album.cover_art %}
