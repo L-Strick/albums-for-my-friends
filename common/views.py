@@ -201,7 +201,7 @@ class StatisticsView(TemplateView):
             else:
                 user_data_dict[user] = {"max": "--", "min": "--", "avg": "--"}
             if user_submitted_albums[user]:
-                user_data_dict[user]["submitted_avg"] = str(round(sum([album.get_average_score for album in user_submitted_albums[user]]) / len(user_submitted_albums[user]), 2))
+                user_data_dict[user]["submitted_avg"] = str(round(sum([album.get_average_score() for album in user_submitted_albums[user]]) / len(user_submitted_albums[user]), 2))
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
         context["user_data_dict"] = user_data_dict
