@@ -12,10 +12,11 @@ def forwards_func(apps, schema_editor):
     Album = apps.get_model('common', 'Album')
     albums_to_update = []
     for album in Album.objects.all():
-        user = User.objects.filter(email=NAME_TO_EMAIL_LOOKUP[album.submitted_by_deprecated]).first()
-        if user:
-            album.submitted_by_new = user
-            albums_to_update.append(album)
+        if album.submitted_by_deprecated in NAME_TO_EMAIL_LOOKUP.keys():
+            user = User.objects.filter(email=NAME_TO_EMAIL_LOOKUP[album.submitted_by_deprecated]).first()
+            if user:
+                album.submitted_by_new = user
+                albums_to_update.append(album)
     Album.objects.bulk_update(albums_to_update, ['submitted_by_new'])
 
 
