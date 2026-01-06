@@ -37,7 +37,7 @@
     <h3>Average Album Rating: {{ average_review }}</h3>
     <hr>
     <h3>Highest Rated Album: {{ highest_rated_album }}</h3>
-    <div class="col-md-6">
+    <div>
       {% if highest_rated_album.cover_art %}
         <img src="{{ highest_rated_album.cover_art.url }}" alt="{{ highest_rated_album.title }} cover" style="max-height: 500px; max-width: 500px;">
       {% endif %}
@@ -46,7 +46,7 @@
     </div>
     <hr>
     <h3>Lowest Rated Album: {{ lowest_rated_album }}</h3>
-    <div class="col-md-6">
+    <div>
       {% if lowest_rated_album.cover_art %}
         <img src="{{ lowest_rated_album.cover_art.url }}" alt="{{ lowest_rated_album.title }} cover" style="max-height: 500px; max-width: 500px;">
       {% endif %}
@@ -55,7 +55,7 @@
     </div>
     <hr>
     <h3>Most Controversial Album: {{ most_controversial_album }}</h3>
-    <div class="col-md-6">
+    <div>
       {% if most_controversial_album.cover_art %}
         <img src="{{ most_controversial_album.cover_art.url }}" alt="{{ most_controversial_album.title }} cover" style="max-height: 500px; max-width: 500px;">
       {% endif %}
