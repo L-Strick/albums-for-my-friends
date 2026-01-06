@@ -186,7 +186,7 @@ class StatisticsView(TemplateView):
         todays_album_id = None
         if TodaysAlbumView().album:
             todays_album_id = TodaysAlbumView().album.id
-        reviews = AlbumReview.objects.filter(~Q(album__id=todays_album_id))
+        reviews = AlbumReview.objects.filter(~Q(album__id=todays_album_id) & Q(rating__isnull=False))
         user_reviews = defaultdict(list)
         user_data_dict = {}
         for review in reviews:
@@ -205,6 +205,27 @@ class StatisticsView(TemplateView):
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
         context["user_data_dict"] = user_data_dict
+        if reviews.count() > 0:
+            context["average_review"] = str(round(sum(reviews.values_list('rating', flat=True)) / reviews.count(), 2))
+        else:
+            context["average_review"] = "--"
+        highest_rated_album = None, None
+        lowest_rated_album = None, None
+        most_controversial_album = None, None
+        for album in reviewed_albums:
+            if highest_rated_album[1] is None or float(album.get_average_score()) > highest_rated_album[1]:
+                highest_rated_album = album, float(album.get_average_score())
+            if lowest_rated_album[1] is None or float(album.get_average_score()) < lowest_rated_album[1]:
+                lowest_rated_album = album, float(album.get_average_score())
+            ratings = album.reviews.filter(rating__isnull=False).values_list('rating', flat=True)
+            if most_controversial_album[1] is None or max(ratings) - min(ratings) > most_controversial_album[1]:
+                most_controversial_album = album, max(ratings) - min(ratings)
+        context.update({
+            "highest_rated_album": highest_rated_album[0],
+            "lowest_rated_album": lowest_rated_album[0],
+            "most_controversial_album": most_controversial_album[0],
+            "most_controversial_diff": most_controversial_album[1],
+        })
         return context
 
 

@@ -5,6 +5,7 @@
 
 {% block body %}
   <div class="container">
+    <h1>User Stats</h1>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -27,5 +28,41 @@
         {% endfor %}
       </tbody>
     </table>
+  
+    <h1>Group Stats</h1>
+    <h3>Average Album Rating: {{ average_review }}</h3>
+    <h3>Highest Rated Album:</h3>
+    <div class="col-md-6">
+      <p>{{ highest_rated_album.title }}</p>
+      <p>{{ highest_rated_album.artist }}</p>
+      <p>{% if highest_rated_album.genre %}{{ highest_rated_album.genre }}{% else %}{% endif %}</p>
+      {% if highest_rated_album.cover_art %}
+        <img src="{{ highest_rated_album.cover_art.url }}" alt="{{ highest_rated_album.title }} cover" style="max-height: 500px; max-width: 500px;">
+      {% endif %}
+      <p>Submitted by: {{ highest_rated_album.submitted_by }}</p>
+      <h4>Average Score: {{ highest_rated_album.get_average_score }}</h4>
+    </div>
+    <h3>Lowest Rated Album:</h3>
+    <div class="col-md-6">
+      <p>{{ lowest_rated_album.title }}</p>
+      <p>{{ lowest_rated_album.artist }}</p>
+      <p>{% if lowest_rated_album.genre %}{{ lowest_rated_album.genre }}{% else %}{% endif %}</p>
+      {% if lowest_rated_album.cover_art %}
+        <img src="{{ lowest_rated_album.cover_art.url }}" alt="{{ lowest_rated_album.title }} cover" style="max-height: 500px; max-width: 500px;">
+      {% endif %}
+      <p>Submitted by: {{ lowest_rated_album.submitted_by }}</p>
+      <h4>Average Score: {{ lowest_rated_album.get_average_score }}</h4>
+    </div>
+    <h3>Most Controversial Album:</h3>
+    <div class="col-md-6">
+      <p>{{ most_controversial_album.title }}</p>
+      <p>{{ most_controversial_album.artist }}</p>
+      <p>{% if most_controversial_album.genre %}{{ most_controversial_album.genre }}{% else %}{% endif %}</p>
+      {% if most_controversial_album.cover_art %}
+        <img src="{{ most_controversial_album.cover_art.url }}" alt="{{ most_controversial_album.title }} cover" style="max-height: 500px; max-width: 500px;">
+      {% endif %}
+      <p>Submitted by: {{ most_controversial_album.submitted_by }}</p>
+      <h4>Score Differential: {{ most_controversial_diff }}</h4>
+    </div>
   </div>
 {% endblock %}
