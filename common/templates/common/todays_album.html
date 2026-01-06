@@ -7,7 +7,7 @@
 {% block body %}
   <div class="container">
     <div class="row text-center">
-      <div class="col-md-3">
+      <div class="col-md-6">
         <h1>{{ album.title }}</h1>
         <h2>{{ album.artist }}</h2>
         <h3>{% if album.genre %}{{ album.genre }}{% else %}{% endif %}</h3>
@@ -16,7 +16,7 @@
         {% endif %}
         <p class="lead">Submitted by: {{ album.submitted_by }}</p>
       </div>
-      <div class="col-md-9 d-flex align-items-center">
+      <div class="col-md-6 d-flex align-items-center">
         {% crispy form %}
       </div>
     </div>
