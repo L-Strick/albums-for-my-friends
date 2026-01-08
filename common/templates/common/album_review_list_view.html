@@ -34,32 +34,30 @@
                   <div>
                     {{ obj.notes|linebreaks }}
                   </div>
-                  {% if obj.user_id != user_id %}
-                    <div class="d-flex justify-content-center">
-                      <form action="{% url 'user_review_vote' obj.id user_id 'like' %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-primary me-2" type="submit">
-                          {% if obj.id in user_likes %}
-                            <i class="bi bi-hand-thumbs-up-fill"></i>
-                          {% else %}
-                            <i class="bi bi-hand-thumbs-up"></i>
-                          {% endif %}
-                          {{ like_counter_lookup|get_item:obj.id }}
-                        </button>
-                      </form>
-                      <form action="{% url 'user_review_vote' obj.id user_id 'dislike' %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-primary">
-                          {% if obj.id in user_dislikes %}
-                            <i class="bi bi-hand-thumbs-down-fill"></i>
-                          {% else %}
-                            <i class="bi bi-hand-thumbs-down"></i>
-                          {% endif %}
-                          {{ dislike_counter_lookup|get_item:obj.id }}
-                        </button>
-                      </form>
-                    </div>
-                  {% endif %}
+                  <div class="d-flex justify-content-center">
+                    <form action="{% url 'user_review_vote' obj.id user_id 'like' %}" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-outline-primary me-2" type="submit" {% if obj.user_id == user_id %}disabled{% endif %}>
+                        {% if obj.id in user_likes %}
+                          <i class="bi bi-hand-thumbs-up-fill"></i>
+                        {% else %}
+                          <i class="bi bi-hand-thumbs-up"></i>
+                        {% endif %}
+                        {{ like_counter_lookup|get_item:obj.id }}
+                      </button>
+                    </form>
+                    <form action="{% url 'user_review_vote' obj.id user_id 'dislike' %}" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-outline-primary" type="submit" {% if obj.user_id == user_id %}disabled{% endif %}>
+                        {% if obj.id in user_dislikes %}
+                          <i class="bi bi-hand-thumbs-down-fill"></i>
+                        {% else %}
+                          <i class="bi bi-hand-thumbs-down"></i>
+                        {% endif %}
+                        {{ dislike_counter_lookup|get_item:obj.id }}
+                      </button>
+                    </form>
+                  </div>
                 </td>
               </tr>
             {% endfor %}
