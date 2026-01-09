@@ -65,5 +65,11 @@
         </table>
       </div>
     </div>
+    <div class="row text-center">
+      <p class="lead">Waiting on reviews from:</p>
+      {% for user in waiting_on %}
+        <p>{{ user }}</p>
+      {% endfor %}
+    </div>
   </div>
 {% endblock %}

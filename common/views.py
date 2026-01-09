@@ -181,7 +181,9 @@ class AlbumReviewListView(ListView):
                 user_likes.append(review.id)
             if UserReviewThumb.objects.filter(review=review, user=self.request.user, thumbs_down=True).exists():
                 user_dislikes.append(review.id)
-        context.update({"album": album, "user_likes": user_likes, "user_dislikes": user_dislikes, "like_counter_lookup": like_counter_lookup, "dislike_counter_lookup": dislike_counter_lookup})
+        reviewed_users = reviews.values_list('user_id', flat=True)
+        waiting_on = User.objects.filter(~Q(id__in=reviewed_users))
+        context.update({"album": album, "user_likes": user_likes, "user_dislikes": user_dislikes, "like_counter_lookup": like_counter_lookup, "dislike_counter_lookup": dislike_counter_lookup, "waiting_on": waiting_on})
         return context
 
     def get_queryset(self):
