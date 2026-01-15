@@ -211,7 +211,7 @@ class StatisticsView(TemplateView):
             user_submitted_albums[album.submitted_by].append(album)
         for user in users:
             if user_reviews[user]:
-                user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(statistics.mean(user_reviews[user])))}
+                user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(statistics.mean(user_reviews[user]), 2))}
             else:
                 user_data_dict[user] = {"max": "--", "min": "--", "avg": "--"}
             if user_submitted_albums[user]:
