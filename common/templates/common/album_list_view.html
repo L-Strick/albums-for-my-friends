@@ -33,6 +33,7 @@
 
 {% block bottom_javascript %}
   <script src="{{ DATATABLES_JS_URL }}"></script>
+  <script src="{{ DATATABLES_DATE_URL }}"></script>
   <script type="text/javascript">
     $('#album-table').DataTable({"pageLength": 25, "order": [[3, 'desc']]});
   </script>
