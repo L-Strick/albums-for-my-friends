@@ -229,9 +229,9 @@ class StatisticsView(TemplateView):
         highest_rated_album = sorted(average_scores, key=lambda x: x[1], reverse=True)[0]
         lowest_rated_album = sorted(average_scores, key=lambda x: x[1])[0]
         album_ratings_lookup = {album.id: album.reviews.filter(rating__isnull=False).values_list('rating', flat=True) for album in reviewed_albums}
-        album_controversy = [(album, statistics.stdev(album_ratings_lookup[album.id]), max(album_ratings_lookup[album.id]), min(album_ratings_lookup[album.id])) for album in reviewed_albums if len(album_ratings_lookup[album.id]) > 1]
-        most_controversial_album = sorted(album_controversy, key=lambda x: x[1], reverse=True)[0]
-        least_controversial_album = sorted(album_controversy, key=lambda x: x[1])[0]
+        album_controversy = [(album, round(statistics.stdev(album_ratings_lookup[album.id]), 2), max(album_ratings_lookup[album.id]), min(album_ratings_lookup[album.id])) for album in reviewed_albums if len(album_ratings_lookup[album.id]) > 1]
+        most_controversial_album = sorted(album_controversy, key=lambda x: x[1], reverse=True)[0] if len(album_controversy) > 0 else (None, None, None, None)
+        least_controversial_album = sorted(album_controversy, key=lambda x: x[1])[0] if len(album_controversy) > 0 else (None, None, None, None)
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
