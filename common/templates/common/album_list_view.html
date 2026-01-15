@@ -6,12 +6,13 @@
 
 {% block body %}
   <div class="container">
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="album-table">
       <thead>
         <tr>
           <th>Album</th>
           <th>Your Review</th>
           <th>Group Reviews</th>
+          <th>Date Assigned</th>
         </tr>
       </thead>
       <tbody>
@@ -22,9 +23,17 @@
               {{ user_review_lookup|get_item:obj.id|get_item:"rating" }}<a class="btn btn-primary float-end" href="{% if user_review_lookup|get_item:obj.id|get_item:"rating" != '--' %}{% url 'album_review' user_review_lookup|get_item:obj.id|get_item:'id' %}{% else %}{% url 'create_album_review' obj.id %}{% endif %}">Edit</a>
             </td>
             <td>{{ obj.get_average_score }} <a class="btn btn-primary float-end" href="{% url 'album_review_list' obj.id %}">See All</a></td>
+            <td>{{ obj.made_todays_album.date }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+{% endblock %}
+
+{% block bottom_javascript %}
+  <script src="{{ DATATABLES_JS_URL }}"></script>
+  <script type="text/javascript">
+    $('#album-table').DataTable({"order": [[3, 'desc']]});
+  </script>
 {% endblock %}

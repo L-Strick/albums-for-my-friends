@@ -8,4 +8,6 @@ def django_settings(request):
         "LOCALHOST": settings.LOCALHOST,
         "EMAIL_WHITELIST": EMAIL_WHITELIST,
         "user_id": request.user.id,
+        "DATATABLES_CSS_URL": '//cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css',
+        "DATATABLES_JS_URL": "//cdn.datatables.net/2.3.6/js/dataTables.min.js",
     }

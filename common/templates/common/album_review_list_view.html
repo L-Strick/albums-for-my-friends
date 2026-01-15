@@ -17,7 +17,7 @@
         <p class="lead">Submitted by: {{ album.submitted_by }}</p>
       </div>
       <div class="col-md-9 d-flex align-items-center">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="review-table">
           <thead>
             <tr>
               <th>Reviewer</th>
@@ -74,4 +74,11 @@
       </div>
     {% endif %}
   </div>
+{% endblock %}
+
+{% block bottom_javascript %}
+  <script src="{{ DATATABLES_JS_URL }}"></script>
+  <script type="text/javascript">
+    $('#review-table').DataTable();
+  </script>
 {% endblock %}

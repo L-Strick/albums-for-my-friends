@@ -6,7 +6,7 @@
 {% block body %}
   <div class="container">
     <h1>User Stats</h1>
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="user-table">
       <thead>
         <tr>
           <th>User</th>
@@ -72,4 +72,11 @@
       <h4>Standard Deviation: {{ least_controversial_stdev }}, High Score: {{ least_controversial_high }}, Low Score: {{ least_controversial_low }}</h4>
     </div>
   </div>
+{% endblock %}
+
+{% block bottom_javascript %}
+  <script src="{{ DATATABLES_JS_URL }}"></script>
+  <script type="text/javascript">
+    $('#user-table').DataTable({"pageLength": 25});
+  </script>
 {% endblock %}
