@@ -79,6 +79,6 @@
 {% block bottom_javascript %}
   <script src="{{ DATATABLES_JS_URL }}"></script>
   <script type="text/javascript">
-    $('#review-table').DataTable();
+    $('#review-table').DataTable({"pageLength": 25});
   </script>
 {% endblock %}
