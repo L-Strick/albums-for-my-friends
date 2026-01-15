@@ -209,6 +209,7 @@ class StatisticsView(TemplateView):
         user_submitted_albums = defaultdict(list)
         for album in reviewed_albums:
             user_submitted_albums[album.submitted_by].append(album)
+        print("before user review stuff")
         for user in users:
             if user_reviews[user]:
                 user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(statistics.mean(user_reviews[user])))}
@@ -225,13 +226,21 @@ class StatisticsView(TemplateView):
             context["average_review"] = str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))
         else:
             context["average_review"] = "--"
+        print("HERE WE GO")
         average_scores = [(album, float(album.get_average_score())) for album in reviewed_albums]
+        print("hey")
         highest_rated_album = sorted(average_scores, key=lambda x: x[1], reverse=True)[0]
+        print("hi")
         lowest_rated_album = sorted(average_scores, key=lambda x: x[1])[0]
+        print("hello")
         album_ratings_lookup = {album.id: album.reviews.filter(rating__isnull=False).values_list('rating', flat=True) for album in reviewed_albums}
+        print("ciao")
         album_controversy = [(album, round(statistics.stdev(album_ratings_lookup[album.id]), 2), max(album_ratings_lookup[album.id]), min(album_ratings_lookup[album.id])) for album in reviewed_albums if len(album_ratings_lookup[album.id]) > 1]
+        print("bella")
         most_controversial_album = sorted(album_controversy, key=lambda x: x[1], reverse=True)[0] if len(album_controversy) > 0 else (None, None, None, None)
+        print("huh?")
         least_controversial_album = sorted(album_controversy, key=lambda x: x[1])[0] if len(album_controversy) > 0 else (None, None, None, None)
+        print("adios")
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
@@ -244,6 +253,7 @@ class StatisticsView(TemplateView):
             "least_controversial_high": least_controversial_album[2],
             "least_controversial_low": least_controversial_album[3],
         })
+        print(context)
         return context
 
 
