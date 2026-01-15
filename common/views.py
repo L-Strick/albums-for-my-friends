@@ -1,4 +1,5 @@
 import random
+import statistics
 from collections import defaultdict
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -210,38 +211,38 @@ class StatisticsView(TemplateView):
             user_submitted_albums[album.submitted_by].append(album)
         for user in users:
             if user_reviews[user]:
-                user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(sum(user_reviews[user]) / len(user_reviews[user]), 2))}
+                user_data_dict[user] = {"max": max(user_reviews[user]), "min": min(user_reviews[user]), "avg": str(round(statistics.mean(user_reviews[user])))}
             else:
                 user_data_dict[user] = {"max": "--", "min": "--", "avg": "--"}
             if user_submitted_albums[user]:
-                user_data_dict[user]["submitted_avg"] = str(round(sum([float(album.get_average_score()) for album in user_submitted_albums[user]]) / len(user_submitted_albums[user]), 2))
+                user_data_dict[user]["submitted_avg"] = str(round(statistics.mean([album.get_average_score() for album in user_submitted_albums[user]]), 2))
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
             user_data_dict[user]["likes"] = UserReviewThumb.objects.filter(review__user=user, thumbs_up=True).count()
             user_data_dict[user]["dislikes"] = UserReviewThumb.objects.filter(review__user=user, thumbs_down=True).count()
         context["user_data_dict"] = user_data_dict
         if reviews.count() > 0:
-            context["average_review"] = str(round(sum(reviews.values_list('rating', flat=True)) / reviews.count(), 2))
+            context["average_review"] = str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))
         else:
             context["average_review"] = "--"
-        highest_rated_album = None, None
-        lowest_rated_album = None, None
-        most_controversial_album = None, None, None, None
-        for album in reviewed_albums:
-            if highest_rated_album[1] is None or float(album.get_average_score()) > highest_rated_album[1]:
-                highest_rated_album = album, float(album.get_average_score())
-            if lowest_rated_album[1] is None or float(album.get_average_score()) < lowest_rated_album[1]:
-                lowest_rated_album = album, float(album.get_average_score())
-            ratings = album.reviews.filter(rating__isnull=False).values_list('rating', flat=True)
-            if most_controversial_album[1] is None or max(ratings) - min(ratings) > most_controversial_album[1]:
-                most_controversial_album = album, max(ratings) - min(ratings), max(ratings), min(ratings)
+        average_scores = [(album, album.get_average_score()) for album in reviewed_albums]
+        highest_rated_album = sorted(average_scores, key=lambda x: x[1], reverse=True)[0]
+        lowest_rated_album = sorted(average_scores, key=lambda x: x[1])[0]
+        album_ratings_lookup = {album.id: album.reviews.filter(rating__isnull=False).values_list('rating', flat=True) for album in reviewed_albums}
+        album_controversy = [(album, statistics.stdev(album_ratings_lookup[album.id]), max(album_ratings_lookup[album.id]), min(album_ratings_lookup[album.id])) for album in reviewed_albums]
+        most_controversial_album = sorted(album_controversy, key=lambda x: x[1], reverse=True)[0]
+        least_controversial_album = sorted(album_controversy, key=lambda x: x[1])[0]
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
             "most_controversial_album": most_controversial_album[0],
-            "most_controversial_diff": most_controversial_album[1],
+            "most_controversial_stdev": most_controversial_album[1],
             "most_controversial_high": most_controversial_album[2],
             "most_controversial_low": most_controversial_album[3],
+            "least_controversial_album": least_controversial_album[0],
+            "least_controversial_stdev": least_controversial_album[1],
+            "least_controversial_high": least_controversial_album[2],
+            "least_controversial_low": least_controversial_album[3],
         })
         return context
 

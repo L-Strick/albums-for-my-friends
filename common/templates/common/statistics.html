@@ -60,7 +60,16 @@
         <img src="{{ most_controversial_album.cover_art.url }}" alt="{{ most_controversial_album.title }} cover" style="max-height: 500px; max-width: 500px;">
       {% endif %}
       <p>Submitted by: {{ most_controversial_album.submitted_by }}</p>
-      <h4>High Score: {{ most_controversial_high }}, Low Score: {{ most_controversial_low }}, Score Diff: {{ most_controversial_diff }}</h4>
+      <h4>Standard Deviation: {{ most_controversial_stdev }}, High Score: {{ most_controversial_high }}, Low Score: {{ most_controversial_low }}</h4>
+    </div>
+    <hr>
+    <h3>Least Controversial Album: {{ least_controversial_album }}</h3>
+    <div>
+      {% if least_controversial_album.cover_art %}
+        <img src="{{ least_controversial_album.cover_art.url }}" alt="{{ least_controversial_album.title }} cover" style="max-height: 500px; max-width: 500px;">
+      {% endif %}
+      <p>Submitted by: {{ least_controversial_album.submitted_by }}</p>
+      <h4>Standard Deviation: {{ least_controversial_stdev }}, High Score: {{ least_controversial_high }}, Low Score: {{ least_controversial_low }}</h4>
     </div>
   </div>
 {% endblock %}
