@@ -225,7 +225,7 @@ class StatisticsView(TemplateView):
             context["average_review"] = str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))
         else:
             context["average_review"] = "--"
-        average_scores = [(album, album.get_average_score()) for album in reviewed_albums]
+        average_scores = [(album, float(album.get_average_score())) for album in reviewed_albums]
         highest_rated_album = sorted(average_scores, key=lambda x: x[1], reverse=True)[0]
         lowest_rated_album = sorted(average_scores, key=lambda x: x[1])[0]
         album_ratings_lookup = {album.id: album.reviews.filter(rating__isnull=False).values_list('rating', flat=True) for album in reviewed_albums}
