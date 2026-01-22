@@ -23,7 +23,7 @@
               {{ user_review_lookup|get_item:obj.id|get_item:"rating" }}<a class="btn btn-primary float-end" href="{% if user_review_lookup|get_item:obj.id|get_item:"rating" != '--' %}{% url 'album_review' user_review_lookup|get_item:obj.id|get_item:'id' %}{% else %}{% url 'create_album_review' obj.id %}{% endif %}">Edit</a>
             </td>
             <td>{{ obj.get_average_score }} <a class="btn btn-primary float-end" href="{% url 'album_review_list' obj.id %}">See All</a></td>
-            <td>{{ obj.made_todays_album.date }}</td>
+            <td>{{ obj.made_todays_album.date|date:"Y-m-d" }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -34,7 +34,15 @@
 {% block bottom_javascript %}
   <script src="{{ DATATABLES_JS_URL }}"></script>
   <script type="text/javascript">
-    DataTable.datetime('D MMM YYYY');
-    $('#album-table').DataTable({"pageLength": 25, "order": [[3, 'desc']]});
+    new DataTable('#album-table', {
+      pageLength: 25, 
+      order: [[3, 'desc']],
+      columnDefs: [
+        {
+            targets: 3,
+            render: DataTable.render.datetime('MMM D YYYY')
+        }
+      ]
+    });
   </script>
 {% endblock %}

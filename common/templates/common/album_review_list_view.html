@@ -60,7 +60,7 @@
                     </form>
                   </div>
                 </td>
-                <td>{{ obj.created_on }}</td>
+                <td>{{ obj.created_on|date:"Y-m-d" }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -81,7 +81,15 @@
 {% block bottom_javascript %}
   <script src="{{ DATATABLES_JS_URL }}"></script>
   <script type="text/javascript">
-    DataTable.datetime('D MMM YYYY');
-    $('#review-table').DataTable({"pageLength": 25, "order": [[3, 'asc']]});
+     new DataTable('#review-table', {
+      pageLength: 25, 
+      order: [[3, 'asc']],
+      columnDefs: [
+        {
+            targets: 3,
+            render: DataTable.render.datetime('MMM D YYYY')
+        }
+      ]
+    });
   </script>
 {% endblock %}
