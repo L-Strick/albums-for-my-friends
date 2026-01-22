@@ -23,6 +23,7 @@
               <th>Reviewer</th>
               <th>Rating</th>
               <th>Review</th>
+              <th>Date Submitted</th>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +60,7 @@
                     </form>
                   </div>
                 </td>
+                <td>{{ obj.created_on }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -79,6 +81,7 @@
 {% block bottom_javascript %}
   <script src="{{ DATATABLES_JS_URL }}"></script>
   <script type="text/javascript">
-    $('#review-table').DataTable({"pageLength": 25});
+    DataTable.datetime('D MMM YYYY');
+    $('#review-table').DataTable({"pageLength": 25, "order": [[3, 'asc']]});
   </script>
 {% endblock %}
