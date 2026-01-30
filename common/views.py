@@ -244,7 +244,9 @@ class StatisticsView(TemplateView):
                     diffs.append(abs(album_average_lookup[album.id] - float(user_album_score_lookup[album.id])))
             if diffs:
                 tastemaker_lookup[user] = statistics.mean(diffs)
-        tastemaker_data = sorted([(user, diff) for user, diff in tastemaker_lookup.items()], key=lambda x: x[1])[0]
+        tastemaker_data = sorted([(user, diff) for user, diff in tastemaker_lookup.items()], key=lambda x: x[1])
+        tastemaker = tastemaker_data[0]
+        anti_tastemaker = tastemaker_data[-1]
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
@@ -258,8 +260,10 @@ class StatisticsView(TemplateView):
             "least_controversial_low": least_controversial_album[3],
             "personal_likes": personal_likes,
             "personal_dislikes": personal_dislikes,
-            "tastemaker": tastemaker_data[0],
-            "tastemaker_diff": round(tastemaker_data[1], 3),
+            "tastemaker": tastemaker[0],
+            "tastemaker_diff": round(tastemaker[1], 3),
+            "anti_tastemaker": anti_tastemaker[0],
+            "anti_tastemaker_diff": round(anti_tastemaker[1], 3),
         })
         return context
 
