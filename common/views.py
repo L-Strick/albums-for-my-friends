@@ -259,7 +259,7 @@ class StatisticsView(TemplateView):
             "personal_likes": personal_likes,
             "personal_dislikes": personal_dislikes,
             "tastemaker": tastemaker_data[0],
-            "tastemaker_diff": tastemaker_data[1],
+            "tastemaker_diff": round(tastemaker_data[1], 3),
         })
         return context
 
