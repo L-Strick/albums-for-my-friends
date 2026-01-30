@@ -17,6 +17,7 @@ EMAIL_WHITELIST = [
     'uhallc@gmail.com',
     'bry.biggs15@gmail.com',
     'brockwilson1@gmail.com',
+    'ryancevans24@gmail.com',
 ]
 
 EMAIL_TO_NAME_LOOKUP = {
@@ -36,6 +37,7 @@ EMAIL_TO_NAME_LOOKUP = {
     'uhallc@gmail.com': 'Uhall',
     'bry.biggs15@gmail.com': 'Brian',
     'brockwilson1@gmail.com': 'Brock',
+    'ryancevans24@gmail.com': 'Ryan',
 }
 
 NAME_TO_EMAIL_LOOKUP = {value: key for key, value in EMAIL_TO_NAME_LOOKUP.items()}
