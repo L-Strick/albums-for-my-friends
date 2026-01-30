@@ -230,6 +230,21 @@ class StatisticsView(TemplateView):
         album_controversy = [(album, round(statistics.stdev(album_ratings_lookup[album.id]), 2), max(album_ratings_lookup[album.id]), min(album_ratings_lookup[album.id])) for album in reviewed_albums if len(album_ratings_lookup[album.id]) > 1]
         most_controversial_album = sorted(album_controversy, key=lambda x: x[1], reverse=True)[0] if len(album_controversy) > 0 else (None, None, None, None)
         least_controversial_album = sorted(album_controversy, key=lambda x: x[1])[0] if len(album_controversy) > 0 else (None, None, None, None)
+
+        personal_likes = UserReviewThumb.objects.filter(review__user=self.request.user, thumbs_up=True).count()
+        personal_dislikes = UserReviewThumb.objects.filter(review__user=self.request.user, thumbs_down=True).count()
+
+        tastemaker_lookup = {}
+        for user in User.objects.all():
+            user_album_score_lookup = {album.id: AlbumReview.objects.filter(user=user, album=album).first().rating for album in reviewed_albums if AlbumReview.objects.filter(user=user, album=album).exists()}
+            album_average_lookup = {album.id: float(album.get_average_score_excluding_user(user)) for album in reviewed_albums if album.get_average_score_excluding_user(user) != '--'}
+            diffs = []
+            for album in reviewed_albums:
+                if album.id in album_average_lookup.keys() and album.id in user_album_score_lookup.keys():
+                    diffs.append(abs(album_average_lookup[album.id] - float(user_album_score_lookup[album.id])))
+            if diffs:
+                tastemaker_lookup[user] = statistics.mean(diffs)
+        tastemaker_data = sorted([(user, diff) for user, diff in tastemaker_lookup.items()], key=lambda x: x[1])[0]
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
@@ -241,6 +256,10 @@ class StatisticsView(TemplateView):
             "least_controversial_stdev": least_controversial_album[1],
             "least_controversial_high": least_controversial_album[2],
             "least_controversial_low": least_controversial_album[3],
+            "personal_likes": personal_likes,
+            "personal_dislikes": personal_dislikes,
+            "tastemaker": tastemaker_data[0],
+            "tastemaker_diff": tastemaker_data[1],
         })
         return context
 

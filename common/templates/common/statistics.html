@@ -28,6 +28,9 @@
         {% endfor %}
       </tbody>
     </table>
+  
+    <h3>Group Tastemaker: {{ tastemaker }}</h3>
+    <p>Average difference between personal review and group consensus: {{ tastemaker_diff }}</p>
 
     <h1>Group Stats</h1>
     <h3>Average Album Rating: {{ average_review }}</h3>
@@ -67,6 +70,10 @@
       <p>Submitted by: {{ least_controversial_album.submitted_by }}</p>
       <h4>Standard Deviation: {{ least_controversial_stdev }}, High Score: {{ least_controversial_high }}, Low Score: {{ least_controversial_low }}</h4>
     </div>
+  
+    <h1>Personal Stats</h1>
+    <h3>Total Likes: {{ personal_likes }}</h3>
+    <h3>Total Dislikes: {{ personal_dislikes }}</h3>
   </div>
 {% endblock %}
 

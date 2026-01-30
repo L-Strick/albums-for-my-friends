@@ -70,6 +70,13 @@ class Album(TimestampedModel):
         else:
             return '--'
 
+    def get_average_score_excluding_user(self, user):
+        reviews = self.reviews.filter(~Q(user=user) & Q(rating__isnull=False))
+        if reviews.count() > 0:
+            return str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))
+        else:
+            return '--'
+
 
 class AlbumReview(TimestampedModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
