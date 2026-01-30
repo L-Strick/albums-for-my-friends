@@ -218,8 +218,6 @@ class StatisticsView(TemplateView):
                 user_data_dict[user]["submitted_avg"] = str(round(statistics.mean([float(album.get_average_score()) for album in user_submitted_albums[user]]), 2))
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
-            user_data_dict[user]["likes"] = UserReviewThumb.objects.filter(review__user=user, thumbs_up=True).count()
-            user_data_dict[user]["dislikes"] = UserReviewThumb.objects.filter(review__user=user, thumbs_down=True).count()
         context["user_data_dict"] = user_data_dict
         if reviews.count() > 0:
             context["average_review"] = str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))
