@@ -242,7 +242,7 @@ class StatisticsView(TemplateView):
                     diffs.append(abs(album_average_lookup[album.id] - float(user_album_score_lookup[album.id])))
             if diffs:
                 tastemaker_lookup[user] = statistics.mean(diffs)
-            user_album_lookup[user.id] = user_album_score_lookup
+            user_album_lookup[user] = user_album_score_lookup
         tastemaker_data = sorted([(user, diff) for user, diff in tastemaker_lookup.items()], key=lambda x: x[1])
         tastemaker = tastemaker_data[0]
         anti_tastemaker = tastemaker_data[-1]
