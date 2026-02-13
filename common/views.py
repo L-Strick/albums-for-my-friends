@@ -231,10 +231,8 @@ class StatisticsView(TemplateView):
         most_controversial_album = sorted(album_controversy, key=lambda x: x[1], reverse=True)[0] if len(album_controversy) > 0 else (None, None, None, None)
         least_controversial_album = sorted(album_controversy, key=lambda x: x[1])[0] if len(album_controversy) > 0 else (None, None, None, None)
 
-        personal_likes = UserReviewThumb.objects.filter(review__user=self.request.user, thumbs_up=True).count()
-        personal_dislikes = UserReviewThumb.objects.filter(review__user=self.request.user, thumbs_down=True).count()
-
         tastemaker_lookup = {}
+        user_album_lookup = {}
         for user in User.objects.all():
             user_album_score_lookup = {album.id: [review for review in reviews if (review.user == user and review.album == album)][0].rating for album in reviewed_albums if len([review for review in reviews if (review.user == user and review.album == album)]) > 0}
             album_average_lookup = {album.id: float(album.get_average_score_excluding_user(user)) for album in reviewed_albums if album.get_average_score_excluding_user(user) != '--'}
@@ -244,9 +242,29 @@ class StatisticsView(TemplateView):
                     diffs.append(abs(album_average_lookup[album.id] - float(user_album_score_lookup[album.id])))
             if diffs:
                 tastemaker_lookup[user] = statistics.mean(diffs)
+            user_album_lookup[user.id] = user_album_score_lookup
         tastemaker_data = sorted([(user, diff) for user, diff in tastemaker_lookup.items()], key=lambda x: x[1])
         tastemaker = tastemaker_data[0]
         anti_tastemaker = tastemaker_data[-1]
+
+        personal_likes = UserReviewThumb.objects.filter(review__user=self.request.user, thumbs_up=True).count()
+        personal_dislikes = UserReviewThumb.objects.filter(review__user=self.request.user, thumbs_down=True).count()
+        bestie_lookup = {}
+        for user, lookup in user_album_lookup.items():
+            if user != self.request.user:
+                diffs = []
+                user_scores = user_album_lookup[user]
+                for album, rating in user_scores.items():
+                    self_score = user_album_lookup[self.request.user][album.id] if album.id in user_album_lookup[self.request.user].keys() else None
+                    if self_score:
+                        diff = abs(self_score - rating)
+                        diffs.append(diff)
+                if diffs:
+                    bestie_lookup[user] = statistics.mean(diffs)
+        bestie_data = sorted([(user, diff) for user, diff in bestie_lookup.items()], key=lambda x: x[1])
+        bestie = bestie_data[0]
+        enemy = bestie_data[-1]
+
         context.update({
             "highest_rated_album": highest_rated_album[0],
             "lowest_rated_album": lowest_rated_album[0],
@@ -264,6 +282,10 @@ class StatisticsView(TemplateView):
             "tastemaker_diff": round(tastemaker[1], 3),
             "anti_tastemaker": anti_tastemaker[0],
             "anti_tastemaker_diff": round(anti_tastemaker[1], 3),
+            "bestie": bestie[0],
+            "bestie_diff": round(bestie[1], 3),
+            "enemy": enemy[0],
+            "enemy_diff": round(enemy[1], 3),
         })
         return context
 
