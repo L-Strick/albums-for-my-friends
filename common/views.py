@@ -262,7 +262,7 @@ class StatisticsView(TemplateView):
                     bestie_lookup[user] = statistics.mean(diffs)
         bestie_data = sorted([(user, diff) for user, diff in bestie_lookup.items()], key=lambda x: x[1])
         bestie = bestie_data[0]
-        enemy = bestie_data[-1]
+        nemesis = bestie_data[-1]
 
         context.update({
             "highest_rated_album": highest_rated_album[0],
@@ -283,8 +283,8 @@ class StatisticsView(TemplateView):
             "anti_tastemaker_diff": round(anti_tastemaker[1], 3),
             "bestie": bestie[0],
             "bestie_diff": round(bestie[1], 3),
-            "enemy": enemy[0],
-            "enemy_diff": round(enemy[1], 3),
+            "nemesis": nemesis[0],
+            "nemesis_diff": round(nemesis[1], 3),
         })
         return context
 
