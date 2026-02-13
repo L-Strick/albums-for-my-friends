@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
@@ -200,7 +200,7 @@ class StatisticsView(TemplateView):
         todays_album_id = None
         if TodaysAlbumView().album:
             todays_album_id = TodaysAlbumView().album.id
-        reviews = AlbumReview.objects.filter(~Q(album__id=todays_album_id) & Q(rating__isnull=False))
+        reviews = AlbumReview.objects.filter(~Q(album__id=todays_album_id) & Q(rating__isnull=False)).select_related('user').select_related('album')
         user_reviews = defaultdict(list)
         user_data_dict = {}
         for review in reviews:
@@ -236,7 +236,7 @@ class StatisticsView(TemplateView):
 
         tastemaker_lookup = {}
         for user in User.objects.all():
-            user_album_score_lookup = {album.id: AlbumReview.objects.filter(user=user, album=album).first().rating for album in reviewed_albums if AlbumReview.objects.filter(user=user, album=album).exists()}
+            user_album_score_lookup = {album.id: [review for review in reviews if (review.user == user and review.album == album)][0].rating for album in reviewed_albums if len([review for review in reviews if (review.user == user and review.album == album)]) > 0}
             album_average_lookup = {album.id: float(album.get_average_score_excluding_user(user)) for album in reviewed_albums if album.get_average_score_excluding_user(user) != '--'}
             diffs = []
             for album in reviewed_albums:
