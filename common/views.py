@@ -253,9 +253,8 @@ class StatisticsView(TemplateView):
         for user, lookup in user_album_lookup.items():
             if user != self.request.user:
                 diffs = []
-                user_scores = user_album_lookup[user]
-                for album, rating in user_scores.items():
-                    self_score = user_album_lookup[self.request.user][album.id] if album.id in user_album_lookup[self.request.user].keys() else None
+                for album_id, rating in lookup.items():
+                    self_score = user_album_lookup[self.request.user][album_id] if album_id in user_album_lookup[self.request.user].keys() else None
                     if self_score:
                         diff = abs(self_score - rating)
                         diffs.append(diff)
