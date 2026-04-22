@@ -206,6 +206,14 @@ class StatisticsView(TemplateView):
         for review in reviews:
             user_reviews[review.user].append(review.rating)
         reviewed_albums = Album.objects.filter(~Q(id=todays_album_id) & Q(made_todays_album__isnull=False))
+        album_to_review_lookup = defaultdict(list)
+        for review in reviews:
+            if review.rating:
+                album_to_review_lookup[review.album.id].append(review.rating)
+        album_average_lookup = {}
+        for album in reviewed_albums:
+            if album_to_review_lookup[album.id]:
+                album_average_lookup[album.id] = statistics.mean(album_to_review_lookup[album.id])
         user_submitted_albums = defaultdict(list)
         for album in reviewed_albums:
             user_submitted_albums[album.submitted_by].append(album)
@@ -215,7 +223,7 @@ class StatisticsView(TemplateView):
             else:
                 user_data_dict[user] = {"max": "--", "min": "--", "avg": "--"}
             if user_submitted_albums[user]:
-                user_data_dict[user]["submitted_avg"] = str(round(statistics.mean([float(album.get_average_score()) for album in user_submitted_albums[user]]), 2))
+                user_data_dict[user]["submitted_avg"] = str(round(statistics.mean([float(album_average_lookup[album.id]) for album in user_submitted_albums[user] if album.id in album_average_lookup.keys()]), 2))
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
         context["user_data_dict"] = user_data_dict
@@ -223,7 +231,7 @@ class StatisticsView(TemplateView):
             context["average_review"] = str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))
         else:
             context["average_review"] = "--"
-        average_scores = [(album, float(album.get_average_score())) for album in reviewed_albums]
+        average_scores = [(album, float(album_average_lookup[album.id])) for album in reviewed_albums if album.id in album_average_lookup.keys()]
         highest_rated_album = sorted(average_scores, key=lambda x: x[1], reverse=True)[0]
         lowest_rated_album = sorted(average_scores, key=lambda x: x[1])[0]
         album_ratings_lookup = {album.id: album.reviews.filter(rating__isnull=False).values_list('rating', flat=True) for album in reviewed_albums}
