@@ -41,3 +41,5 @@ EMAIL_TO_NAME_LOOKUP = {
 }
 
 NAME_TO_EMAIL_LOOKUP = {value: key for key, value in EMAIL_TO_NAME_LOOKUP.items()}
+
+MISSED_ALBUM_CAP = 5

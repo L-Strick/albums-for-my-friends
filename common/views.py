@@ -14,6 +14,8 @@ from django.views.generic import ListView
 from django.views.generic.base import TemplateView, View
 from django.http.response import HttpResponse
 from django.views.generic.edit import FormView, UpdateView
+
+from common.constants import MISSED_ALBUM_CAP
 from common.forms import SampleForm, AlbumReviewForm
 from common.models import Album, AlbumReview, User, UserReviewThumb
 
@@ -73,7 +75,13 @@ class TodaysAlbumView(FormView):
         doy = today.weekday()
         if doy in [0, 3]:
             if not Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).exists():
-                album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
+                recent_albums = Album.objects.order_by('-made_todays_album').prefetch_related('reviews', 'reviews__user')[:MISSED_ALBUM_CAP]
+                valid_users = set()
+                for album in recent_albums:
+                    reviewed_users = [review.user for review in album.reviews.all()]
+                    for user in reviewed_users:
+                        valid_users.add(user)
+                album = random.choice(Album.objects.filter(made_todays_album__isnull=True, submitted_by__in=valid_users))
                 album.update(made_todays_album=datetime.now(ZoneInfo('America/New_York')))
                 return album
             else:
