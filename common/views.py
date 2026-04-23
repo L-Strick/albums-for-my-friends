@@ -77,6 +77,8 @@ class TodaysAlbumView(FormView):
             if not Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).exists():
                 recent_albums = Album.objects.order_by('-made_todays_album').prefetch_related('reviews', 'reviews__user')[:MISSED_ALBUM_CAP]
                 valid_users = set()
+                # The Grant Exception 🫡
+                valid_users.add(User.objects.get(email="gbirindelli20@gmail.com"))
                 for album in recent_albums:
                     reviewed_users = [review.user for review in album.reviews.all()]
                     for user in reviewed_users:
