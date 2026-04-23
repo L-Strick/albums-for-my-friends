@@ -84,6 +84,14 @@ class AlbumReview(TimestampedModel):
     notes = models.TextField(blank=True, null=True)
     rating = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('10.0'))])
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'album'],
+                name='unique_review'
+            )
+        ]
+
 
 class UserReviewThumb(TimestampedModel):
     review = models.ForeignKey(AlbumReview, on_delete=models.PROTECT)

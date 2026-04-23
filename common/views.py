@@ -81,7 +81,10 @@ class TodaysAlbumView(FormView):
                     reviewed_users = [review.user for review in album.reviews.all()]
                     for user in reviewed_users:
                         valid_users.add(user)
-                album = random.choice(Album.objects.filter(made_todays_album__isnull=True, submitted_by__in=valid_users))
+                if len(valid_users) > 0:
+                    album = random.choice(Album.objects.filter(made_todays_album__isnull=True, submitted_by__in=valid_users))
+                else:
+                    album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
                 album.update(made_todays_album=datetime.now(ZoneInfo('America/New_York')))
                 return album
             else:
