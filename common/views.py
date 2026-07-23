@@ -87,6 +87,9 @@ class TodaysAlbumView(FormView):
                     album = random.choice(Album.objects.filter(made_todays_album__isnull=True, submitted_by__in=valid_users))
                 else:
                     album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
+                # TEMPORARY TECCA FIX, REMOVE AFTER SELECTED
+                if album.submitted_by == User.objects.get(email="jacktecca@gmail.com"):
+                    album = Album.objects.get(artist="Gojira")
                 album.update(made_todays_album=datetime.now(ZoneInfo('America/New_York')))
                 return album
             else:
