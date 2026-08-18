@@ -79,7 +79,7 @@ class Album(TimestampedModel):
 
 
 class AlbumReview(TimestampedModel):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="reviews")
     album = models.ForeignKey(Album, on_delete=models.PROTECT, related_name="reviews")
     notes = models.TextField(blank=True, null=True)
     rating = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('10.0'))])

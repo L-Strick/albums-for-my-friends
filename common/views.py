@@ -287,6 +287,8 @@ class StatisticsView(TemplateView):
         bestie_data = sorted([(user, diff) for user, diff in bestie_lookup.items()], key=lambda x: x[1])
         bestie = bestie_data[0]
         nemesis = bestie_data[-1]
+        reviewed_albums = self.request.user.reviews.values_list("album_id", flat=True)
+        missed_albums = Album.objects.filter(made_todays_album__isnull=False).exclude(id__in=reviewed_albums).count()
 
         context.update({
             "highest_rated_album": highest_rated_album[0],
@@ -309,6 +311,7 @@ class StatisticsView(TemplateView):
             "bestie_diff": round(bestie[1], 3),
             "nemesis": nemesis[0],
             "nemesis_diff": round(nemesis[1], 3),
+            "num_missed_albums": missed_albums,
         })
         return context
 
