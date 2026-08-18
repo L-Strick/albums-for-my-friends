@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.conf import settings
-from django.db.models import Q, Prefetch
+from django.db.models import Q, OuterRef, Prefetch, Subquery
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
@@ -125,7 +125,11 @@ class AlbumListView(ListView):
             todays_album_id = TodaysAlbumView().album.id
         return self.model.objects.filter(
             Q(~Q(id=todays_album_id) & Q(made_todays_album__isnull=False))
-        ).prefetch_related('reviews')
+        ).prefetch_related('reviews').annotate(
+            most_recent_review=Subquery(AlbumReview.objects.filter(
+                album_id=OuterRef("id"),
+            ).order_by("-created_on").values('created_on')[:1])
+        )
 
 
 class AlbumReviewView(UpdateView):
@@ -217,6 +221,7 @@ class StatisticsView(TemplateView):
         if TodaysAlbumView().album:
             todays_album_id = TodaysAlbumView().album.id
         reviews = AlbumReview.objects.filter(~Q(album__id=todays_album_id) & Q(rating__isnull=False)).select_related('user').select_related('album')
+        albums_in_waiting = Album.objects.filter(made_todays_album__isnull=True).select_related("submitted_by")
         user_reviews = defaultdict(list)
         user_data_dict = {}
         for review in reviews:
@@ -242,6 +247,10 @@ class StatisticsView(TemplateView):
                 user_data_dict[user]["submitted_avg"] = str(round(statistics.mean([float(album_average_lookup[album.id]) for album in user_submitted_albums[user] if album.id in album_average_lookup.keys()]), 2))
             else:
                 user_data_dict[user]["submitted_avg"] = "--"
+            user_data_dict[user]["albums_in_waiting"] = 0
+        for album in albums_in_waiting:
+            if album.submitted_by:
+                user_data_dict[album.submitted_by]["albums_in_waiting"] += 1
         context["user_data_dict"] = user_data_dict
         if reviews.count() > 0:
             context["average_review"] = str(round(statistics.mean(reviews.values_list('rating', flat=True)), 2))

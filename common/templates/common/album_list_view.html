@@ -13,6 +13,7 @@
           <th>Your Review</th>
           <th>Group Reviews</th>
           <th>Date Assigned</th>
+          <th>Most Recent Review</th>
         </tr>
       </thead>
       <tbody>
@@ -24,6 +25,7 @@
             </td>
             <td>{{ obj.get_average_score }} <a class="btn btn-primary float-end" href="{% url 'album_review_list' obj.id %}">See All</a></td>
             <td>{{ obj.made_todays_album.date|date:"Y-m-d" }}</td>
+            <td>{{ obj.most_recent_review.date|date:"Y-m-d" }}</td>a
           </tr>
         {% endfor %}
       </tbody>
@@ -39,7 +41,7 @@
       order: [[3, 'desc']],
       columnDefs: [
         {
-            targets: 3,
+            targets: [3, 4],
             render: DataTable.render.datetime('MMM D YYYY')
         }
       ]
