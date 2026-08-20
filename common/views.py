@@ -17,6 +17,7 @@ from django.views.generic.edit import FormView, UpdateView
 
 from common.constants import MISSED_ALBUM_CAP
 from common.forms import SampleForm, AlbumReviewForm
+from common.helpers import get_valid_users
 from common.models import Album, AlbumReview, User, UserReviewThumb
 
 
@@ -75,15 +76,8 @@ class TodaysAlbumView(FormView):
         doy = today.weekday()
         if doy in [0, 3]:
             if not Album.objects.filter(made_todays_album__gte=datetime.now(ZoneInfo('America/New_York')) - timedelta(hours=24)).exists():
-                recent_albums = Album.objects.order_by('-made_todays_album').prefetch_related('reviews', 'reviews__user')[:MISSED_ALBUM_CAP]
-                valid_users = set()
-                # The Grant Exception 🫡
-                valid_users.add(User.objects.get(email="gbirindelli20@gmail.com"))
-                for album in recent_albums:
-                    reviewed_users = [review.user for review in album.reviews.all()]
-                    for user in reviewed_users:
-                        valid_users.add(user)
-                if len(valid_users) > 0:
+                valid_users = get_valid_users()
+                if valid_users.count() > 0:
                     album = random.choice(Album.objects.filter(made_todays_album__isnull=True, submitted_by__in=valid_users))
                 else:
                     album = random.choice(Album.objects.filter(made_todays_album__isnull=True))
@@ -266,7 +260,7 @@ class StatisticsView(TemplateView):
 
         tastemaker_lookup = {}
         user_album_lookup = {}
-        for user in User.objects.all():
+        for user in get_valid_users():
             user_album_score_lookup = {album.id: [review for review in reviews if (review.user == user and review.album == album)][0].rating for album in reviewed_albums if len([review for review in reviews if (review.user == user and review.album == album)]) > 0}
             album_average_lookup = {album.id: float(album.get_average_score_excluding_user(user)) for album in reviewed_albums if album.get_average_score_excluding_user(user) != '--'}
             diffs = []
