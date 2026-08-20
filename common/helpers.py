@@ -8,7 +8,7 @@ def get_valid_users():
     # The Grant Exception 🫡
     grant = User.objects.filter(email="gbirindelli20@gmail.com")
     if grant.exists():
-        valid_users.add(grant.id)
+        valid_users.add(grant.first().id)
     for album in recent_albums:
         reviewed_users = [review.user for review in album.reviews.all()]
         for user in reviewed_users:
