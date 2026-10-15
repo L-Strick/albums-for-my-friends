@@ -260,7 +260,7 @@ class StatisticsView(TemplateView):
 
         tastemaker_lookup = {}
         user_album_lookup = {}
-        for user in get_valid_users():
+        for user in get_valid_users(additional_ids=[self.request.user.id]):
             user_album_score_lookup = {album.id: [review for review in reviews if (review.user == user and review.album == album)][0].rating for album in reviewed_albums if len([review for review in reviews if (review.user == user and review.album == album)]) > 0}
             album_average_lookup = {album.id: float(album.get_average_score_excluding_user(user)) for album in reviewed_albums if album.get_average_score_excluding_user(user) != '--'}
             diffs = []
