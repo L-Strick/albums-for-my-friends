@@ -15,7 +15,8 @@ def get_valid_users(additional_ids=[]):
             valid_users.add(user.id)
             
     if additional_ids:
-        valid_users.add([id for id in additional_ids])
+        for id in additional_ids:
+            valid_users.add(id)
 
     if len(valid_users) == 0:
         valid_users = User.objects.all().values_list("id", flat=True)
